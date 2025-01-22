@@ -1,0 +1,73 @@
+plugins {
+    id 'com.android.library' version '8.7.3' apply false
+}
+
+subprojects {
+    group = 'multiffi'
+    version = '1.0.0'
+}
+
+project(':library') {
+
+    apply plugin: 'com.android.library'
+    apply plugin: 'signing'
+    apply plugin: 'maven-publish'
+
+    dependencies {
+        testImplementation 'junit:junit:4.13.2'
+        androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    }
+
+    android {
+        publishing {
+            singleVariant('release') {
+                withSourcesJar()
+                withJavadocJar()
+            }
+        }
+    }
+
+    tasks.withType(Javadoc).configureEach { enabled = false }
+
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'io.github.multiffi'
+                artifactId = "dalfik"
+                version = version
+                afterEvaluate {
+                    from components.release
+                }
+                pom {
+                    name = 'io.github.multiffi'
+                    description = 'Java FFI for Dalvik/ART'
+                    url = 'https://github.com/multiffi/dalfik'
+                    licenses {
+                        license {
+                            name = 'BSD 3-Clause \"New\" or \"Revised\" License'
+                            url = 'http://opensource.org/licenses/BSD-3-Clause'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'Tianscar'
+                            name = 'Naoko Mitsurugi'
+                            email = 'tianscar@protonmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git@github.com/multiffi/dalfik.git'
+                        developerConnection = 'scm:git:git@github.com/multiffi/dalfik.git'
+                        url = 'https://github.com/multiffi/dalfik'
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        sign(publishing.publications.release)
+    }
+
+}
