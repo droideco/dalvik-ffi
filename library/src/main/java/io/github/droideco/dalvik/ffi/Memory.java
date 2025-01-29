@@ -13,10 +13,32 @@ public final class Memory {
         System.loadLibrary("dalvikffi");
     }
 
+    private static long parseMemoryBytes(String memoryString) {
+        long multiplier;
+        char unitChar = memoryString.charAt(memoryString.length() - 1);
+        if (unitChar == 'k' || unitChar == 'K') multiplier = 1024;
+        else if (unitChar == 'm' || unitChar == 'M') multiplier = 1024 * 1024;
+        else if (unitChar == 'g' || unitChar == 'G') multiplier = 1024 * 1024 * 1024;
+        else if (unitChar == 't' || unitChar == 'T') multiplier = 1024L * 1024L * 1024L * 1024L;
+        else multiplier = 1;
+        if (multiplier > 1) memoryString = memoryString.substring(0, memoryString.length() - 1);
+        return Math.multiplyExact(multiplier, Long.parseLong(memoryString));
+    }
+    private static final long BUFFER_SIZE;
+    static {
+        long value;
+        try {
+            value = parseMemoryBytes(System.getProperty("droideco.dalvik.ffi.bufferSize"));
+        }
+        catch (Throwable e) {
+            value = 4096;
+        }
+        BUFFER_SIZE = value;
+    }
     static final ThreadLocal<Long> BUFFER = new ThreadLocal<>() {
         @Override
         protected Long initialValue() {
-            return Memory.allocate(4096);
+            return BUFFER_SIZE == 0L ? null : Memory.allocate(BUFFER_SIZE);
         }
     };
 
