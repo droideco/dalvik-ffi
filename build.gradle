@@ -3,7 +3,7 @@ plugins {
 }
 
 subprojects {
-    group = 'multiffi'
+    group = 'droideco'
     version = '1.0.0'
 }
 
@@ -33,16 +33,16 @@ project(':library') {
     publishing {
         publications {
             release(MavenPublication) {
-                groupId = 'io.github.multiffi'
-                artifactId = "dalfik"
+                groupId = 'io.github.droideco'
+                artifactId = "dalvik-ffi"
                 version = version
                 afterEvaluate {
                     from components.release
                 }
                 pom {
-                    name = 'io.github.multiffi'
+                    name = 'io.github.droideco'
                     description = 'Java FFI for Dalvik/ART'
-                    url = 'https://github.com/multiffi/dalfik'
+                    url = 'https://github.com/droideco/dalvik-ffi'
                     licenses {
                         license {
                             name = 'BSD 3-Clause \"New\" or \"Revised\" License'
@@ -57,9 +57,9 @@ project(':library') {
                         }
                     }
                     scm {
-                        connection = 'scm:git:git@github.com/multiffi/dalfik.git'
-                        developerConnection = 'scm:git:git@github.com/multiffi/dalfik.git'
-                        url = 'https://github.com/multiffi/dalfik'
+                        connection = 'scm:git:git@github.com/droideco/dalvik-ffi.git'
+                        developerConnection = 'scm:git:git@github.com/droideco/dalvik-ffi.git'
+                        url = 'https://github.com/droideco/dalvik-ffi'
                     }
                 }
             }

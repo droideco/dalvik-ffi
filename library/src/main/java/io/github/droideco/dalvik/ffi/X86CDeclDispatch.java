@@ -1,4 +1,4 @@
-package io.github.multiffi.dalfik;
+package io.github.droideco.dalvik.ffi;
 
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
@@ -10,20 +10,17 @@ import dalvik.annotation.optimization.FastNative;
 public final class X86CDeclDispatch {
 
     private X86CDeclDispatch() {
-        throw new AssertionError("No io.github.multiffi.dalfik.X86CDeclDispatch instances for you!");
+        throw new AssertionError("No io.github.droideco.dalvik.ffi.X86CDeclDispatch instances for you!");
     }
 
     static {
-        System.loadLibrary("dalfik");
+        System.loadLibrary("dalvikffi");
     }
 
     public static boolean isSupported() {
         return IS_SUPPORTED;
     }
-
-    private static final boolean IS_SUPPORTED = supported();
-    @CriticalNative
-    private static native boolean supported();
+    private static final boolean IS_SUPPORTED = Library.ABI.equals("x86");
 
     public static native int invokeEAX(long function);
     public static native int invokeST0(long function);

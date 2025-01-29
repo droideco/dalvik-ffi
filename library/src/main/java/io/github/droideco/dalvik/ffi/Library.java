@@ -1,4 +1,4 @@
-package io.github.multiffi.dalfik;
+package io.github.droideco.dalvik.ffi;
 
 import android.annotation.SuppressLint;
 
@@ -8,12 +8,15 @@ import java.util.Objects;
 public final class Library {
 
     private Library() {
-        throw new AssertionError("No io.github.multiffi.dalfik.Library instances for you!");
+        throw new AssertionError("No io.github.droideco.dalvik.ffi.Library instances for you!");
     }
 
     static {
-        System.loadLibrary("dalfik");
+        System.loadLibrary("dalvikffi");
     }
+
+    static final String ABI = nABI();
+    private static native String nABI();
 
     public static String mapName(String libraryName) {
         if (libraryName == null) return null;

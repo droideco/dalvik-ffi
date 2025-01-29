@@ -1,30 +1,27 @@
-package io.github.multiffi.dalfik;
+package io.github.droideco.dalvik.ffi;
 
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
 
 /**
- * <h2>ARMEL (armeabi, armeabi-v7) Intrinsics</h2>
+ * <h2>ARMEL (armeabi-v7a) Intrinsics</h2>
  * <p><b>No ARMHF for Android!</b></p>
  * <p>ARMEL uses R0-R4 for first 4 arguments, no VFP register in use to pass argument.</p>
  */
 public final class ARMELDispatch {
 
     private ARMELDispatch() {
-        throw new AssertionError("No io.github.multiffi.dalfik.ARMELDispatch instances for you!");
+        throw new AssertionError("No io.github.droideco.dalvik.ffi.ARMELDispatch instances for you!");
     }
 
     static {
-        System.loadLibrary("dalfik");
+        System.loadLibrary("dalvikffi");
     }
 
     public static boolean isSupported() {
         return IS_SUPPORTED;
     }
-
-    private static final boolean IS_SUPPORTED = supported();
-    @CriticalNative
-    private static native boolean supported();
+    private static final boolean IS_SUPPORTED = Library.ABI.equals("armeabi-v7a");
 
     public static native int invokeR0(long function);
     public static native int invokeR1(long function, int r0);

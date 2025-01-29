@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'dalfik'
+rootProject.name = 'dalvik-ffi'
 include ':library'

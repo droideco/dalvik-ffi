@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.22.1)
 # Since this is the top level CMakeLists.txt, the project name is also accessible
 # with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
 # build script scope).
-project("dalfik")
+project("dalvikffi")
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -26,14 +26,13 @@ project("dalfik")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        main.c
         library.c
         dispatch.c
         ffi.c
         memory.c)
 
 add_library(ffi SHARED IMPORTED)
-set_target_properties(ffi PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libffi.so)
+set_target_properties(ffi PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../libs/${CMAKE_ANDROID_ARCH_ABI}/libffi.so)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE include)
 
 # Specifies libraries CMake should link to your target library. You

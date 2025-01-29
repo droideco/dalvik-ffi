@@ -1,4 +1,4 @@
-package io.github.multiffi.dalfik;
+package io.github.droideco.dalvik.ffi;
 
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
@@ -10,20 +10,17 @@ import dalvik.annotation.optimization.FastNative;
 public final class SysVX64Dispatch {
 
     private SysVX64Dispatch() {
-        throw new AssertionError("No io.github.multiffi.dalfik.SysVX64Dispatch instances for you!");
+        throw new AssertionError("No io.github.droideco.dalvik.ffi.SysVX64Dispatch instances for you!");
     }
 
     static {
-        System.loadLibrary("dalfik");
+        System.loadLibrary("dalvikffi");
     }
 
     public static boolean isSupported() {
         return IS_SUPPORTED;
     }
-
-    private static final boolean IS_SUPPORTED = supported();
-    @CriticalNative
-    private static native boolean supported();
+    private static final boolean IS_SUPPORTED = Library.ABI.equals("x86_64");
 
     public static native long invokeR0(long function);
     public static native long invokeR1(long function, long rdi);

@@ -1,5 +1,5 @@
 android {
-    namespace 'io.github.multiffi.dalfik'
+    namespace 'io.github.droideco.dalvik.ffi'
     compileSdk 34
     ndkVersion "23.2.8568313"
 
@@ -12,6 +12,12 @@ android {
             cmake {
                 cppFlags "-std=c++11"
             }
+        }
+    }
+
+    testOptions {
+        defaultConfig {
+            minSdk 19
         }
     }
 
@@ -37,4 +43,3 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 }
-
