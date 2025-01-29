@@ -19,6 +19,18 @@ public final class FFIDispatch {
     @CriticalNative
     private static native void nCriticalCall(long cif, long fn, long rvalue, long avalues);
 
+    public static void rawCall(FFICallContext context, long function, long rvalue, long avalues) {
+        nCall(context.handle, function, rvalue, avalues);
+    }
+
+    public static void rawFastCall(FFICallContext context, long function, long rvalue, long avalues) {
+        nFastCall(context.handle, function, rvalue, avalues);
+    }
+
+    public static void rawCriticalCall(FFICallContext context, long function, long rvalue, long avalues) {
+        nCriticalCall(context.handle, function, rvalue, avalues);
+    }
+
     public static Object call(FFICallContext context, long function, Object... args) {
         FFIType rtype = context.rtype;
         long rvalue = Memory.BUFFER.get();

@@ -16,18 +16,18 @@ public final class FFIClosure {
     private static final Map<Long, FFIClosure> USER_DATA_MAP = new HashMap<>();
 
     private final FFICallContext context;
-    private final FFIClosureHandler handler;
+    private final FFIRawClosureHandler handler;
     private final long closure;
     private final long pfp;
     private final long fp;
     private final long rvalue;
     private final AtomicBoolean recycled = new AtomicBoolean(false);
 
-    public static FFIClosure newClosure(FFICallContext context, FFIClosureHandler handler) {
+    public static FFIClosure newClosure(FFICallContext context, FFIRawClosureHandler handler) {
         return new FFIClosure(context, handler);
     }
 
-    private FFIClosure(FFICallContext context, FFIClosureHandler handler) {
+    private FFIClosure(FFICallContext context, FFIRawClosureHandler handler) {
         this.context = Objects.requireNonNull(context);
         this.handler = Objects.requireNonNull(handler);
         this.pfp = Memory.allocate(Memory.ADDRESS_SIZE);
@@ -65,7 +65,7 @@ public final class FFIClosure {
         return context;
     }
 
-    public FFIClosureHandler getClosureHandler() {
+    public FFIRawClosureHandler getClosureHandler() {
         return handler;
     }
 
@@ -98,6 +98,7 @@ public final class FFIClosure {
     private static void nDispatch(long cif, long rvalue, long avalues, long user_data) {
         FFICallContext context = CIF_MAP.get(cif);
         FFIClosure closure = USER_DATA_MAP.get(user_data);
+        closure.handler.preInvoke(context);
         try {
             if (context.rtype.compound) {
                 closure.handler.invoke(context, closure.rvalue, avalues);
@@ -110,6 +111,9 @@ public final class FFIClosure {
         }
         catch (Throwable e) {
             throw new UndeclaredThrowableException(e);
+        }
+        finally {
+            closure.handler.postInvoke(context);
         }
     }
 
