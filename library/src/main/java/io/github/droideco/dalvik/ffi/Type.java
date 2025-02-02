@@ -5,19 +5,19 @@ import java.util.WeakHashMap;
 
 import dalvik.annotation.optimization.CriticalNative;
 
-public final class FFIType {
+public final class Type {
 
     static {
         System.loadLibrary("dalvikffi");
     }
 
-    private static final Map<Integer, FFIType> SINT8_ARRAY_MAP = new WeakHashMap<>();
-    public static FFIType ofSize(int size) {
+    private static final Map<Integer, Type> SINT8_ARRAY_MAP = new WeakHashMap<>();
+    public static Type ofSize(int size) {
         Integer boxed = size;
         if (!SINT8_ARRAY_MAP.containsKey(boxed)) {
             synchronized (SINT8_ARRAY_MAP) {
                 if (!SINT8_ARRAY_MAP.containsKey(boxed)) {
-                    long count = size & 0xFFFFFFFFL;
+                    long count = Integer.toUnsignedLong(size);
                     long elements = Memory.allocateInitialized(count + 1, Memory.ADDRESS_SIZE);
                     if (elements == 0L) throw new IllegalStateException("Failed to initialize ffi_type");
                     for (long i = 0; i < count; i ++) {
@@ -28,26 +28,26 @@ public final class FFIType {
                         Memory.free(elements);
                         throw new IllegalStateException("Failed to initialize ffi_type");
                     }
-                    SINT8_ARRAY_MAP.put(boxed, new FFIType(handle, Integer.toUnsignedLong(size), elements));
+                    SINT8_ARRAY_MAP.put(boxed, new Type(handle, count, elements));
                 }
             }
         }
         return SINT8_ARRAY_MAP.get(boxed);
     }
 
-    public static final FFIType VOID = new FFIType(nGetFFITypeVoid(), 0);
-    public static final FFIType SINT8 = new FFIType(nGetFFITypeSInt8(), 1);
-    public static final FFIType SINT16 = new FFIType(nGetFFITypeSInt16(), 2);
-    public static final FFIType JCHAR = new FFIType(nGetFFITypeUInt16(), 2);
-    public static final FFIType SINT32 = new FFIType(nGetFFITypeSInt32(), 4);
-    public static final FFIType SINT64 = new FFIType(nGetFFITypeSInt64(), 8);
-    public static final FFIType FLOAT = new FFIType(nGetFFITypeFloat(), 4);
-    public static final FFIType DOUBLE = new FFIType(nGetFFITypeDouble(), 8);
-    public static final FFIType POINTER = new FFIType(nGetFFITypePointer(), Memory.ADDRESS_SIZE);
-    public static final FFIType LONG = new FFIType((Memory.NATIVE_LONG_SIZE == 4L ? SINT32 : SINT64).handle, Memory.NATIVE_LONG_SIZE);
-    public static final FFIType SIZE = new FFIType((Memory.ADDRESS_SIZE == 4L ? SINT32 : SINT64).handle, Memory.ADDRESS_SIZE);
-    public static final FFIType BOOLEAN = new FFIType(SIZE.handle, SIZE.size);
-    public static final FFIType WCHAR = new FFIType(SINT32.handle, SINT32.size);
+    public static final Type VOID = new Type(nGetFFITypeVoid(), 0);
+    public static final Type SINT8 = new Type(nGetFFITypeSInt8(), 1);
+    public static final Type SINT16 = new Type(nGetFFITypeSInt16(), 2);
+    public static final Type JCHAR = new Type(nGetFFITypeUInt16(), 2);
+    public static final Type SINT32 = new Type(nGetFFITypeSInt32(), 4);
+    public static final Type SINT64 = new Type(nGetFFITypeSInt64(), 8);
+    public static final Type FLOAT = new Type(nGetFFITypeFloat(), 4);
+    public static final Type DOUBLE = new Type(nGetFFITypeDouble(), 8);
+    public static final Type POINTER = new Type(nGetFFITypePointer(), Memory.ADDRESS_SIZE);
+    public static final Type LONG = new Type((Memory.NATIVE_LONG_SIZE == 4L ? SINT32 : SINT64).handle, Memory.NATIVE_LONG_SIZE);
+    public static final Type SIZE = new Type((Memory.ADDRESS_SIZE == 4L ? SINT32 : SINT64).handle, Memory.ADDRESS_SIZE);
+    public static final Type BOOLEAN = new Type(POINTER.handle, POINTER.size);
+    public static final Type WCHAR = new Type(SINT32.handle, SINT32.size);
 
     @CriticalNative
     private static native long nGetFFITypeVoid();
@@ -75,11 +75,11 @@ public final class FFIType {
     final long size;
     final boolean compound;
 
-    private FFIType(long handle, long size) {
-        this(handle, size, 0);
+    private Type(long handle, long size) {
+        this(handle, size, 0L);
     }
 
-    private FFIType(long handle, long size, long elements) {
+    private Type(long handle, long size, long elements) {
         this.handle = handle;
         this.size = size;
         this.elements = elements;
@@ -106,7 +106,7 @@ public final class FFIType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FFIType type = (FFIType) o;
+        Type type = (Type) o;
         return size == type.size;
     }
 

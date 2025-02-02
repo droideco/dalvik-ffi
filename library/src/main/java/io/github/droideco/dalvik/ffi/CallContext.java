@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public final class FFICallContext {
+public final class CallContext {
 
     static {
         System.loadLibrary("dalvikffi");
     }
 
-    private static final Map<Integer, FFICallContext> CIF_MAP = new WeakHashMap<>();
-    public static FFICallContext getContext(FFIType rtype, FFIType[] atypes, int atypesOffset, int nfixedargs, int ntotalargs) {
+    private static final Map<Integer, CallContext> CIF_MAP = new WeakHashMap<>();
+    public static CallContext getCallContext(Type rtype, Type[] atypes, int atypesOffset, int nfixedargs, int ntotalargs) {
         if (ntotalargs < 0) throw new IllegalArgumentException("Negative array length");
-        else if (ntotalargs > 255) throw new IllegalArgumentException("parameter limit exceeded: " + Integer.toUnsignedLong(ntotalargs));
+        else if (ntotalargs > 255) throw new IllegalArgumentException("parameter limit exceeded: " + ntotalargs);
         if (nfixedargs < 0) nfixedargs = ntotalargs;
         else if (nfixedargs > ntotalargs)
             throw new IllegalArgumentException(nfixedargs + " > " + ntotalargs);
@@ -47,20 +47,20 @@ public final class FFICallContext {
                         Memory.free(atypes_memory);
                         throw new IllegalStateException("Failed to initialize ffi_cif");
                     }
-                    CIF_MAP.put(boxed, new FFICallContext(handle, atypes_memory, rtype, atypes));
+                    CIF_MAP.put(boxed, new CallContext(handle, atypes_memory, rtype, atypes));
                 }
             }
         }
         return CIF_MAP.get(boxed);
     }
-    public static FFICallContext getContext(FFIType rtype, FFIType[] atypes, int nfixedargs, int ntotalargs) {
-        return getContext(rtype, atypes, 0, nfixedargs, ntotalargs);
+    public static CallContext getCallContext(Type rtype, Type[] atypes, int nfixedargs, int ntotalargs) {
+        return getCallContext(rtype, atypes, 0, nfixedargs, ntotalargs);
     }
-    public static FFICallContext getContext(FFIType rtype, FFIType[] atypes, int nfixedargs) {
-        return getContext(rtype, atypes, 0, nfixedargs, atypes.length);
+    public static CallContext getCallContext(Type rtype, Type[] atypes, int nfixedargs) {
+        return getCallContext(rtype, atypes, 0, nfixedargs, atypes.length);
     }
-    public static FFICallContext getContext(FFIType rtype, FFIType... atypes) {
-        return getContext(rtype, atypes, 0, -1, atypes.length);
+    public static CallContext getCallContext(Type rtype, Type... atypes) {
+        return getCallContext(rtype, atypes, 0, -1, atypes.length);
     }
 
     private static native long nAllocateCIF();
@@ -69,10 +69,10 @@ public final class FFICallContext {
 
     final long handle;
     private final long atypes_memory;
-    final FFIType rtype;
-    final FFIType[] atypes;
+    final Type rtype;
+    final Type[] atypes;
 
-    private FFICallContext(long handle, long atypes_memory, FFIType rtype, FFIType[] atypes) {
+    private CallContext(long handle, long atypes_memory, Type rtype, Type[] atypes) {
         this.handle = handle;
         this.atypes_memory = atypes_memory;
         this.rtype = rtype;
@@ -95,7 +95,7 @@ public final class FFICallContext {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FFICallContext cif = (FFICallContext) o;
+        CallContext cif = (CallContext) o;
         return handle == cif.handle;
     }
 

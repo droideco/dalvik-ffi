@@ -499,14 +499,14 @@ Java_io_github_droideco_dalvik_ffi_ARMELDispatch_invokeR4(__attribute__((unused)
 #elif defined(__i386__)
 
 JNIEXPORT jint JNICALL
-Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeEAX(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
-                                                          jlong function) {
+Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeEAX(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
+                                                                      jlong function) {
     return ((jint (*)(void)) ((void *) (function)))();
 }
 
 JNIEXPORT jint JNICALL
-Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeST0(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
-                                                          jlong function) {
+Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeST0(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
+                                                                      jlong function) {
     return ((jvalue) ((jfloat (*)(void)) ((void *) (function)))()).i;
 }
 
@@ -632,13 +632,13 @@ __attribute__ ((visibility ("hidden"))) jint JNICALL Dispatch_OnLoad(JNIEnv *env
                 {"criticalInvokeR4", "!(JIIII)I", Java_io_github_droideco_dalvik_ffi_ARMELDispatch_invokeR4}
         };
 #elif defined(__i386__)
-        jclass clazz = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/X86CDeclDispatch");
+        jclass clazz = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/CDeclx86Dispatch");
         if (clazz == NULL) return JNI_ERR;
         JNINativeMethod methods[] = {
-                {"fastInvokeEAX", "!(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeEAX},
-                {"fastInvokeST0", "!(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeST0},
-                {"criticalInvokeEAX", "!(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeEAX},
-                {"criticalInvokeST0", "!(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeST0}
+                {"fastInvokeEAX", "!(J)I",     Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeEAX},
+                {"fastInvokeST0", "!(J)I",     Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeST0},
+                {"criticalInvokeEAX", "!(J)I", Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeEAX},
+                {"criticalInvokeST0", "!(J)I", Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeST0}
         };
 #else
 #error unsupported target
@@ -764,13 +764,13 @@ __attribute__ ((visibility ("hidden"))) jint JNICALL Dispatch_OnLoad(JNIEnv *env
                 {"criticalInvokeR4", "(JIIII)I", Java_io_github_droideco_dalvik_ffi_ARMELDispatch_invokeR4}
         };
 #elif defined(__i386__)
-        jclass clazz = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/X86CDeclDispatch");
+        jclass clazz = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/CDeclx86Dispatch");
         if (clazz == NULL) return JNI_ERR;
         JNINativeMethod methods[] = {
-                {"fastInvokeEAX", "(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeEAX},
-                {"fastInvokeST0", "(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeST0},
-                {"criticalInvokeEAX", "(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeEAX},
-                {"criticalInvokeST0", "(J)I", Java_io_github_droideco_dalvik_ffi_X86CDeclDispatch_invokeST0}
+                {"fastInvokeEAX", "(J)I",     Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeEAX},
+                {"fastInvokeST0", "(J)I",     Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeST0},
+                {"criticalInvokeEAX", "(J)I", Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeEAX},
+                {"criticalInvokeST0", "(J)I", Java_io_github_droideco_dalvik_ffi_CDeclx86Dispatch_criticalInvokeST0}
         };
 #else
 #error unsupported target

@@ -7,10 +7,10 @@ import dalvik.annotation.optimization.FastNative;
  * <h2>System V x86_64 Intrinsics</h2>
  * <p>SysVX64 uses RDI, RSI, RDX, RCX, R8, R9 for first 6 integer arguments, XMM0-XMM7 for first 8 decimal arguments.</p>
  */
-public final class SysVX64Dispatch {
+public final class SysVx64Dispatch {
 
-    private SysVX64Dispatch() {
-        throw new AssertionError("No io.github.droideco.dalvik.ffi.SysVX64Dispatch instances for you!");
+    private SysVx64Dispatch() {
+        throw new AssertionError("No io.github.droideco.dalvik.ffi.SysVx64Dispatch instances for you!");
     }
 
     static {

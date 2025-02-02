@@ -10,12 +10,14 @@ __attribute__ ((visibility ("hidden"))) JavaVM *VM;
 extern jint Dispatch_OnLoad(JNIEnv *env);
 extern jint FFI_OnLoad(JNIEnv *env);
 extern jint Memory_OnLoad(JNIEnv *env);
+extern jint Errno_OnLoad(JNIEnv *env);
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, __attribute__((unused)) void *reserved) {
     JNIEnv *env;
     if ((*vm)->GetEnv(vm, (void **) &env, JNI_VERSION_1_6) != JNI_OK) return JNI_ERR;
     if (Dispatch_OnLoad(env) != JNI_OK) return JNI_ERR;
     if (FFI_OnLoad(env) != JNI_OK) return JNI_ERR;
     if (Memory_OnLoad(env) != JNI_OK) return JNI_ERR;
+    if (Errno_OnLoad(env) != JNI_OK) return JNI_ERR;
     VM = vm;
     return JNI_VERSION_1_6;
 }

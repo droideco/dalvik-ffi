@@ -53,7 +53,7 @@ nGetFFITypePointer(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) 
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_droideco_dalvik_ffi_FFIDispatch_nCall(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz, jlong cif, jlong fn, jlong rvalue, jlong avalues) {
+Java_io_github_droideco_dalvik_ffi_Dispatch_nCriticalCall(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz, jlong cif, jlong fn, jlong rvalue, jlong avalues) {
     ffi_call((ffi_cif *) cif, FFI_FN(fn), (void *) rvalue, (void **) avalues);
 }
 
@@ -61,7 +61,7 @@ static jclass ffi_closure_class;
 static jmethodID nDispatch_methodID;
 
 __attribute__ ((visibility ("hidden"))) jint JNICALL FFI_OnLoad(JNIEnv *env) {
-    jclass ffi_type_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/FFIType");
+    jclass ffi_type_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/Type");
     if (ffi_type_class == NULL) return JNI_ERR;
     if (android_get_device_api_level() < __ANDROID_API_O__) {
         JNINativeMethod ffi_type_methods[] = {
@@ -93,25 +93,25 @@ __attribute__ ((visibility ("hidden"))) jint JNICALL FFI_OnLoad(JNIEnv *env) {
         if ((*env)->RegisterNatives(env, ffi_type_class, ffi_type_methods, sizeof(ffi_type_methods) / sizeof(ffi_type_methods[0])) != JNI_OK)
             return JNI_ERR;
     }
-    jclass ffi_dispatch_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/FFIDispatch");
+    jclass ffi_dispatch_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/Dispatch");
     if (ffi_dispatch_class == NULL) return JNI_ERR;
     if (android_get_device_api_level() < __ANDROID_API_O__) {
         JNINativeMethod ffi_dispatch_methods[] = {
-                {"nFastCall",    "!(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_FFIDispatch_nCall},
-                {"nCriticalCall",    "!(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_FFIDispatch_nCall}
+                {"nFastCall",    "!(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_Dispatch_nCriticalCall},
+                {"nCriticalCall",    "!(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_Dispatch_nCriticalCall}
         };
         if ((*env)->RegisterNatives(env, ffi_dispatch_class, ffi_dispatch_methods, sizeof(ffi_dispatch_methods) / sizeof(ffi_dispatch_methods[0])) != JNI_OK)
             return JNI_ERR;
     }
     else {
         JNINativeMethod ffi_dispatch_methods[] = {
-                {"nFastCall",    "(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_FFIDispatch_nCall},
-                {"nCriticalCall",    "(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_FFIDispatch_nCall}
+                {"nFastCall",    "(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_Dispatch_nCriticalCall},
+                {"nCriticalCall",    "(JJJJ)V", &Java_io_github_droideco_dalvik_ffi_Dispatch_nCriticalCall}
         };
         if ((*env)->RegisterNatives(env, ffi_dispatch_class, ffi_dispatch_methods, sizeof(ffi_dispatch_methods) / sizeof(ffi_dispatch_methods[0])) != JNI_OK)
             return JNI_ERR;
     }
-    ffi_closure_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/FFIClosure");
+    ffi_closure_class = (*env)->FindClass(env, "io/github/droideco/dalvik/ffi/Closure");
     if (ffi_closure_class == NULL) return JNI_ERR;
     ffi_closure_class = (*env)->NewGlobalRef(env, ffi_closure_class);
     nDispatch_methodID = (*env)->GetStaticMethodID(env, ffi_closure_class, "nDispatch", "(JJJJ)V");
@@ -127,9 +127,9 @@ __attribute__ ((visibility ("hidden"))) void JNICALL FFI_OnUnload(JNIEnv *env) {
 }
 
 JNIEXPORT jlong JNICALL
-Java_io_github_droideco_dalvik_ffi_FFIType_nAllocateFFITypeSInt8Array(__attribute__((unused)) JNIEnv *env,
-                                                                 __attribute__((unused)) jclass clazz,
-                                                                 jlong size, jlong elements) {
+Java_io_github_droideco_dalvik_ffi_Type_nAllocateFFITypeSInt8Array(__attribute__((unused)) JNIEnv *env,
+                                                                   __attribute__((unused)) jclass clazz,
+                                                                   jlong size, jlong elements) {
     ffi_type *type = (ffi_type *) malloc(sizeof(ffi_type));
     if (type == NULL) return (jlong) NULL;
     type->size = (size_t) size;
@@ -140,26 +140,26 @@ Java_io_github_droideco_dalvik_ffi_FFIType_nAllocateFFITypeSInt8Array(__attribut
 }
 
 JNIEXPORT jlong JNICALL
-Java_io_github_droideco_dalvik_ffi_FFICallContext_nAllocateCIF(__attribute__((unused)) JNIEnv *env,
-                                                  __attribute__((unused)) jclass clazz) {
+Java_io_github_droideco_dalvik_ffi_CallContext_nAllocateCIF(__attribute__((unused)) JNIEnv *env,
+                                                            __attribute__((unused)) jclass clazz) {
     return (jlong) malloc(sizeof(ffi_cif));
 }
 
 JNIEXPORT jint JNICALL
-Java_io_github_droideco_dalvik_ffi_FFICallContext_nInitializeCIF(__attribute__((unused)) JNIEnv *env,
-                                                    __attribute__((unused)) jclass clazz, jlong cif,
-                                                    jlong rtype,
-                                                    jlong atypes, jint nargs) {
+Java_io_github_droideco_dalvik_ffi_CallContext_nInitializeCIF(__attribute__((unused)) JNIEnv *env,
+                                                              __attribute__((unused)) jclass clazz, jlong cif,
+                                                              jlong rtype,
+                                                              jlong atypes, jint nargs) {
     return ffi_prep_cif((ffi_cif *) cif, FFI_DEFAULT_ABI, (unsigned int) nargs,(ffi_type *) rtype,
                         (ffi_type **) atypes);
 }
 
 JNIEXPORT jint JNICALL
-Java_io_github_droideco_dalvik_ffi_FFICallContext_nInitializeCIFVariadic(__attribute__((unused)) JNIEnv *env,
-                                                            __attribute__((unused)) jclass clazz,
-                                                            jlong cif,
-                                                            jlong rtype, jlong atypes,
-                                                            jint nfixedargs, jint ntotalargs) {
+Java_io_github_droideco_dalvik_ffi_CallContext_nInitializeCIFVariadic(__attribute__((unused)) JNIEnv *env,
+                                                                      __attribute__((unused)) jclass clazz,
+                                                                      jlong cif,
+                                                                      jlong rtype, jlong atypes,
+                                                                      jint nfixedargs, jint ntotalargs) {
     return ffi_prep_cif_var((ffi_cif *) cif, FFI_DEFAULT_ABI,
                             (unsigned int) nfixedargs, (unsigned int) ntotalargs,
                             (ffi_type *) rtype, (ffi_type **) atypes);
@@ -174,20 +174,20 @@ static void nDispatch(ffi_cif *cif, void *rvalue, void **avalues, void *user_dat
 }
 
 JNIEXPORT jlong JNICALL
-Java_io_github_droideco_dalvik_ffi_FFIClosure_nAllocateClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz, jlong pfp) {
+Java_io_github_droideco_dalvik_ffi_Closure_nAllocateClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz, jlong pfp) {
     return (jlong) ffi_closure_alloc(sizeof(ffi_closure), (void **) pfp);
 }
 
 JNIEXPORT jint JNICALL
-Java_io_github_droideco_dalvik_ffi_FFIClosure_nInitializeClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
-                                                                 jlong closure, jlong cif,
-                                                                 jlong user_data, jlong fp) {
+Java_io_github_droideco_dalvik_ffi_Closure_nInitializeClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
+                                                              jlong closure, jlong cif,
+                                                              jlong user_data, jlong fp) {
     return ffi_prep_closure_loc((ffi_closure *) closure, (ffi_cif *) cif, &nDispatch, (void *) user_data, (void *) fp);
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_droideco_dalvik_ffi_FFIClosure_nFreeClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
-                                                           jlong closure) {
+Java_io_github_droideco_dalvik_ffi_Closure_nFreeClosure(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass clazz,
+                                                        jlong closure) {
     ffi_closure_free((void *) closure);
 }
 

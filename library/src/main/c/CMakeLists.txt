@@ -29,7 +29,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         library.c
         dispatch.c
         ffi.c
-        memory.c)
+        memory.c
+        errno.c)
 
 add_library(ffi SHARED IMPORTED)
 set_target_properties(ffi PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../libs/${CMAKE_ANDROID_ARCH_ABI}/libffi.so)
