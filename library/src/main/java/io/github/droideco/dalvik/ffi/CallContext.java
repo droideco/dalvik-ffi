@@ -13,7 +13,7 @@ public final class CallContext {
     private static final Map<Integer, CallContext> CIF_MAP = new WeakHashMap<>();
     public static CallContext getCallContext(Type rtype, Type[] atypes, int atypesOffset, int nfixedargs, int ntotalargs) {
         if (ntotalargs < 0) throw new IllegalArgumentException("Negative array length");
-        else if (ntotalargs > 255) throw new IllegalArgumentException("parameter limit exceeded: " + ntotalargs);
+        //else if (ntotalargs > 255) throw new IllegalArgumentException("parameter limit exceeded: " + ntotalargs);
         if (nfixedargs < 0) nfixedargs = ntotalargs;
         else if (nfixedargs > ntotalargs)
             throw new IllegalArgumentException(nfixedargs + " > " + ntotalargs);
