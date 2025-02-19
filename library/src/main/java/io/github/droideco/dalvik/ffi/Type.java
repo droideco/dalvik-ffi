@@ -12,7 +12,7 @@ public final class Type {
     }
 
     private static final Map<Integer, Type> SINT8_ARRAY_MAP = new WeakHashMap<>();
-    public static Type ofSize(int size) {
+    public static Type ofSInt8Array(int size) {
         Integer boxed = size;
         if (!SINT8_ARRAY_MAP.containsKey(boxed)) {
             synchronized (SINT8_ARRAY_MAP) {
@@ -28,26 +28,26 @@ public final class Type {
                         Memory.free(elements);
                         throw new IllegalStateException("Failed to initialize ffi_type");
                     }
-                    SINT8_ARRAY_MAP.put(boxed, new Type(handle, count, elements));
+                    SINT8_ARRAY_MAP.put(boxed, new Type(handle, count, elements, "struct"));
                 }
             }
         }
         return SINT8_ARRAY_MAP.get(boxed);
     }
 
-    public static final Type VOID = new Type(nGetFFITypeVoid(), 0);
-    public static final Type SINT8 = new Type(nGetFFITypeSInt8(), 1);
-    public static final Type SINT16 = new Type(nGetFFITypeSInt16(), 2);
-    public static final Type JCHAR = new Type(nGetFFITypeUInt16(), 2);
-    public static final Type SINT32 = new Type(nGetFFITypeSInt32(), 4);
-    public static final Type SINT64 = new Type(nGetFFITypeSInt64(), 8);
-    public static final Type FLOAT = new Type(nGetFFITypeFloat(), 4);
-    public static final Type DOUBLE = new Type(nGetFFITypeDouble(), 8);
-    public static final Type POINTER = new Type(nGetFFITypePointer(), Memory.ADDRESS_SIZE);
-    public static final Type LONG = new Type((Memory.NATIVE_LONG_SIZE == 4L ? SINT32 : SINT64).handle, Memory.NATIVE_LONG_SIZE);
-    public static final Type SIZE = new Type((Memory.ADDRESS_SIZE == 4L ? SINT32 : SINT64).handle, Memory.ADDRESS_SIZE);
-    public static final Type BOOLEAN = new Type(POINTER.handle, POINTER.size);
-    public static final Type WCHAR = new Type(SINT32.handle, SINT32.size);
+    public static final Type VOID = new Type(nGetFFITypeVoid(), 0, "void");
+    public static final Type SINT8 = new Type(nGetFFITypeSInt8(), 1, "int8_t");
+    public static final Type SINT16 = new Type(nGetFFITypeSInt16(), 2, "int16_t");
+    public static final Type UNICHAR = new Type(nGetFFITypeUInt16(), 2, "unichar");
+    public static final Type SINT32 = new Type(nGetFFITypeSInt32(), 4, "int32_t");
+    public static final Type SINT64 = new Type(nGetFFITypeSInt64(), 8, "int64_t");
+    public static final Type FLOAT = new Type(nGetFFITypeFloat(), 4, "float");
+    public static final Type DOUBLE = new Type(nGetFFITypeDouble(), 8, "double");
+    public static final Type POINTER = new Type(nGetFFITypePointer(), Memory.ADDRESS_SIZE, "caddr_t");
+    public static final Type SLONG = new Type((Memory.NATIVE_LONG_SIZE == 4L ? SINT32 : SINT64).handle, Memory.NATIVE_LONG_SIZE, "long");
+    public static final Type SIZE = new Type((Memory.ADDRESS_SIZE == 4L ? SINT32 : SINT64).handle, Memory.ADDRESS_SIZE, "size_t");
+    public static final Type BOOLEAN = new Type(POINTER.handle, POINTER.size, "boolean");
+    public static final Type WCHAR = new Type(SINT32.handle, SINT32.size, "wchar_t");
 
     @CriticalNative
     private static native long nGetFFITypeVoid();
@@ -74,16 +74,18 @@ public final class Type {
     private final long elements;
     final long size;
     final boolean compound;
+    private final String name;
 
-    private Type(long handle, long size) {
-        this(handle, size, 0L);
+    private Type(long handle, long size, String name) {
+        this(handle, size, 0L, name);
     }
 
-    private Type(long handle, long size, long elements) {
+    private Type(long handle, long size, long elements, String name) {
         this.handle = handle;
         this.size = size;
         this.elements = elements;
         compound = elements != 0L;
+        this.name = name;
     }
 
     public int size() {
@@ -99,6 +101,11 @@ public final class Type {
         finally {
             super.finalize();
         }
+    }
+
+    @Override
+    public String toString() {
+        return name + ':' + size;
     }
 
     @Override

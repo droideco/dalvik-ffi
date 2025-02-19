@@ -39,29 +39,29 @@ public final class Closure {
                     long avalue = Memory.getAddress(avalues + Memory.ADDRESS_SIZE * i);
                     if (atype == Type.SINT8) args[i] = Memory.getByte(avalue);
                     else if (atype == Type.SINT16) args[i] = Memory.getShort(avalue);
-                    else if (atype == Type.JCHAR) args[i] = Memory.getChar(avalue);
+                    else if (atype == Type.UNICHAR) args[i] = Memory.getChar(avalue);
                     else if (atype == Type.SINT32 || atype == Type.WCHAR) args[i] = Memory.getInt(avalue);
                     else if (atype == Type.SINT64) args[i] = Memory.getLong(avalue);
                     else if (atype == Type.FLOAT) args[i] = Memory.getFloat(avalue);
                     else if (atype == Type.DOUBLE) args[i] = Memory.getDouble(avalue);
                     else if (atype == Type.POINTER || atype == Type.SIZE) args[i] = Memory.getAddress(avalue);
                     else if (atype == Type.BOOLEAN) args[i] = Memory.getAddress(avalue) != 0;
-                    else if (atype == Type.LONG) args[i] = Memory.getNativeLong(avalue);
+                    else if (atype == Type.SLONG) args[i] = Memory.getNativeLong(avalue);
                     else args[i] = avalue;
                 }
-                Object result = handler.invoke(args);
+                Object result = handler.invoke(closure, args);
                 if (rtype != Type.VOID) {
                     Objects.requireNonNull(result);
                     if (rtype == Type.SINT8) Memory.putByte(rvalue, ((Number) result).byteValue());
                     else if (rtype == Type.SINT16) Memory.putShort(rvalue, ((Number) result).shortValue());
-                    else if (rtype == Type.JCHAR) Memory.putChar(rvalue, (Character) result);
+                    else if (rtype == Type.UNICHAR) Memory.putChar(rvalue, (Character) result);
                     else if (rtype == Type.SINT32 || rtype == Type.WCHAR) Memory.putInt(rvalue, ((Number) result).intValue());
                     else if (rtype == Type.SINT64) Memory.putLong(rvalue, ((Number) result).longValue());
                     else if (rtype == Type.FLOAT) Memory.putFloat(rvalue, ((Number) result).floatValue());
                     else if (rtype == Type.DOUBLE) Memory.putDouble(rvalue, ((Number) result).doubleValue());
                     else if (rtype == Type.POINTER || rtype == Type.SIZE) Memory.putAddress(rvalue, ((Number) result).longValue());
                     else if (rtype == Type.BOOLEAN) Memory.putAddress(rvalue, ((Boolean) result) ? 1 : 0);
-                    else if (rtype == Type.LONG) Memory.putNativeLong(rvalue, ((Number) result).longValue());
+                    else if (rtype == Type.SLONG) Memory.putNativeLong(rvalue, ((Number) result).longValue());
                     else Memory.copy(rvalue, (long) result, rtype.size);
                 }
             }
@@ -116,6 +116,11 @@ public final class Closure {
 
     public long address() {
         return address;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("0x%016X", address);
     }
 
     public void recycle() {

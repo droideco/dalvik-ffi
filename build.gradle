@@ -31,6 +31,11 @@ project(':library') {
     tasks.withType(Javadoc).configureEach { enabled = false }
 
     publishing {
+        repositories {
+            maven {
+                url projectDir.absolutePath + '/build/repository'
+            }
+        }
         publications {
             release(MavenPublication) {
                 groupId = 'io.github.droideco'
@@ -40,7 +45,7 @@ project(':library') {
                     from components.release
                 }
                 pom {
-                    name = 'io.github.droideco'
+                    name = 'Droideco Dalvik FFI'
                     description = 'Java FFI for Dalvik/ART'
                     url = 'https://github.com/droideco/dalvik-ffi'
                     licenses {

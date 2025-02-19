@@ -20,7 +20,15 @@ public final class CallContext {
         if (atypes == null) {
             if (ntotalargs != 0) throw new IllegalArgumentException(ntotalargs + " > 0");
         }
-        else atypes = Arrays.copyOfRange(atypes, atypesOffset, ntotalargs);
+        else {
+            Type[] _atypes = new Type[ntotalargs];
+            for (int i = 0; i < ntotalargs; i ++) {
+                Type atype = atypes[atypesOffset + i];
+                if (atype == Type.VOID) throw new IllegalArgumentException("Unsupported type");
+                _atypes[i] = atype;
+            }
+            atypes = _atypes;
+        }
         int hashCode = Long.hashCode(rtype.handle);
         hashCode = 31 * hashCode + nfixedargs;
         hashCode = 31 * hashCode + ntotalargs;
@@ -77,6 +85,42 @@ public final class CallContext {
         this.atypes_memory = atypes_memory;
         this.rtype = rtype;
         this.atypes = atypes;
+    }
+
+    public Type getReturnType() {
+        return rtype;
+    }
+
+    public Type[] getParameterTypes() {
+        return atypes.clone();
+    }
+
+    public int getParameterCount() {
+        return atypes.length;
+    }
+
+    public Type getParameterType(int index) {
+        return atypes[index];
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("cdecl");
+        builder.append(' ');
+        Type returnType = getReturnType();
+        builder.append(returnType == null ? "void" : returnType);
+        builder.append(' ');
+        builder.append('(').append('*').append(')');
+        builder.append('(');
+        if (atypes.length > 0) {
+            builder.append(atypes[0]);
+            for (int i = 1; i < atypes.length; i ++) {
+                builder.append(',').append(' ').append(atypes[i]);
+            }
+        }
+        builder.append(')');
+        return builder.toString();
     }
 
     @Override

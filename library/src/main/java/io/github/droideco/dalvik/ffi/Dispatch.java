@@ -34,7 +34,7 @@ public final class Dispatch {
     public static Object call(CallContext context, long function, Object... args) {
         Type rtype = context.rtype;
         long rvalue = Memory.BUFFER.get();
-        Memory.putAddress(rvalue, 0L);
+        //Memory.putAddress(rvalue, 0L);
         long avalues;
         if (rtype.compound) avalues = rvalue + Memory.ADDRESS_SIZE;
         else avalues = rvalue + rtype.size;
@@ -48,14 +48,14 @@ public final class Dispatch {
                     Memory.putAddress(avalues + Memory.ADDRESS_SIZE * i, avalue);
                     if (atype == Type.SINT8) Memory.putByte(avalue, ((Number) arg).byteValue());
                     else if (atype == Type.SINT16) Memory.putShort(avalue, ((Number) arg).shortValue());
-                    else if (atype == Type.JCHAR) Memory.putChar(avalue, (Character) arg);
+                    else if (atype == Type.UNICHAR) Memory.putChar(avalue, (Character) arg);
                     else if (atype == Type.SINT32 || atype == Type.WCHAR) Memory.putInt(avalue, ((Number) arg).intValue());
                     else if (atype == Type.SINT64) Memory.putLong(avalue, ((Number) arg).longValue());
                     else if (atype == Type.FLOAT) Memory.putFloat(avalue, ((Number) arg).floatValue());
                     else if (atype == Type.DOUBLE) Memory.putDouble(avalue, ((Number) arg).doubleValue());
                     else if (atype == Type.POINTER || atype == Type.SIZE) Memory.putAddress(avalue, ((Number) arg).longValue());
                     else if (atype == Type.BOOLEAN) Memory.putAddress(avalue, ((Boolean) arg) ? 1L : 0L);
-                    else if (atype == Type.LONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
+                    else if (atype == Type.SLONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
                     avalue += atype.size;
                 }
             }
@@ -65,14 +65,14 @@ public final class Dispatch {
         if (rtype == Type.VOID) return null;
         else if (rtype == Type.SINT8) return Memory.getByte(rvalue);
         else if (rtype == Type.SINT16) return Memory.getShort(rvalue);
-        else if (rtype == Type.JCHAR) return Memory.getChar(rvalue);
+        else if (rtype == Type.UNICHAR) return Memory.getChar(rvalue);
         else if (rtype == Type.SINT32 || rtype == Type.WCHAR) return Memory.getInt(rvalue);
         else if (rtype == Type.SINT64) return Memory.getLong(rvalue);
         else if (rtype == Type.FLOAT) return Memory.getFloat(rvalue);
         else if (rtype == Type.DOUBLE) return Memory.getDouble(rvalue);
         else if (rtype == Type.POINTER || rtype == Type.SIZE) return Memory.getAddress(rvalue);
         else if (rtype == Type.BOOLEAN) return Memory.getAddress(rvalue) != 0;
-        else if (rtype == Type.LONG) return Memory.getNativeLong(rvalue);
+        else if (rtype == Type.SLONG) return Memory.getNativeLong(rvalue);
         else {
             long arg = (long) args[0];
             Memory.copy(arg, Memory.getAddress(rvalue), rtype.size);
@@ -83,7 +83,7 @@ public final class Dispatch {
     public static Object fastCall(CallContext context, long function, Object... args) {
         Type rtype = context.rtype;
         long rvalue = Memory.BUFFER.get();
-        Memory.putAddress(rvalue, 0L);
+        //Memory.putAddress(rvalue, 0L);
         long avalues;
         if (rtype.compound) avalues = rvalue + Memory.ADDRESS_SIZE;
         else avalues = rvalue + rtype.size;
@@ -97,14 +97,14 @@ public final class Dispatch {
                     Memory.putAddress(avalues + Memory.ADDRESS_SIZE * i, avalue);
                     if (atype == Type.SINT8) Memory.putByte(avalue, ((Number) arg).byteValue());
                     else if (atype == Type.SINT16) Memory.putShort(avalue, ((Number) arg).shortValue());
-                    else if (atype == Type.JCHAR) Memory.putChar(avalue, (Character) arg);
+                    else if (atype == Type.UNICHAR) Memory.putChar(avalue, (Character) arg);
                     else if (atype == Type.SINT32 || atype == Type.WCHAR) Memory.putInt(avalue, ((Number) arg).intValue());
                     else if (atype == Type.SINT64) Memory.putLong(avalue, ((Number) arg).longValue());
                     else if (atype == Type.FLOAT) Memory.putFloat(avalue, ((Number) arg).floatValue());
                     else if (atype == Type.DOUBLE) Memory.putDouble(avalue, ((Number) arg).doubleValue());
                     else if (atype == Type.POINTER || atype == Type.SIZE) Memory.putAddress(avalue, ((Number) arg).longValue());
                     else if (atype == Type.BOOLEAN) Memory.putAddress(avalue, ((Boolean) arg) ? 1L : 0L);
-                    else if (atype == Type.LONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
+                    else if (atype == Type.SLONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
                     avalue += atype.size;
                 }
             }
@@ -114,14 +114,14 @@ public final class Dispatch {
         if (rtype == Type.VOID) return null;
         else if (rtype == Type.SINT8) return Memory.getByte(rvalue);
         else if (rtype == Type.SINT16) return Memory.getShort(rvalue);
-        else if (rtype == Type.JCHAR) return Memory.getChar(rvalue);
+        else if (rtype == Type.UNICHAR) return Memory.getChar(rvalue);
         else if (rtype == Type.SINT32 || rtype == Type.WCHAR) return Memory.getInt(rvalue);
         else if (rtype == Type.SINT64) return Memory.getLong(rvalue);
         else if (rtype == Type.FLOAT) return Memory.getFloat(rvalue);
         else if (rtype == Type.DOUBLE) return Memory.getDouble(rvalue);
         else if (rtype == Type.POINTER || rtype == Type.SIZE) return Memory.getAddress(rvalue);
         else if (rtype == Type.BOOLEAN) return Memory.getAddress(rvalue) != 0;
-        else if (rtype == Type.LONG) return Memory.getNativeLong(rvalue);
+        else if (rtype == Type.SLONG) return Memory.getNativeLong(rvalue);
         else {
             long arg = (long) args[0];
             Memory.copy(arg, Memory.getAddress(rvalue), rtype.size);
@@ -132,7 +132,7 @@ public final class Dispatch {
     public static Object criticalCall(CallContext context, long function, Object... args) {
         Type rtype = context.rtype;
         long rvalue = Memory.BUFFER.get();
-        Memory.putAddress(rvalue, 0L);
+        //Memory.putAddress(rvalue, 0L);
         long avalues;
         if (rtype.compound) avalues = rvalue + Memory.ADDRESS_SIZE;
         else avalues = rvalue + rtype.size;
@@ -146,14 +146,14 @@ public final class Dispatch {
                     Memory.putAddress(avalues + Memory.ADDRESS_SIZE * i, avalue);
                     if (atype == Type.SINT8) Memory.putByte(avalue, ((Number) arg).byteValue());
                     else if (atype == Type.SINT16) Memory.putShort(avalue, ((Number) arg).shortValue());
-                    else if (atype == Type.JCHAR) Memory.putChar(avalue, (Character) arg);
+                    else if (atype == Type.UNICHAR) Memory.putChar(avalue, (Character) arg);
                     else if (atype == Type.SINT32 || atype == Type.WCHAR) Memory.putInt(avalue, ((Number) arg).intValue());
                     else if (atype == Type.SINT64) Memory.putLong(avalue, ((Number) arg).longValue());
                     else if (atype == Type.FLOAT) Memory.putFloat(avalue, ((Number) arg).floatValue());
                     else if (atype == Type.DOUBLE) Memory.putDouble(avalue, ((Number) arg).doubleValue());
                     else if (atype == Type.POINTER || atype == Type.SIZE) Memory.putAddress(avalue, ((Number) arg).longValue());
                     else if (atype == Type.BOOLEAN) Memory.putAddress(avalue, ((Boolean) arg) ? 1L : 0L);
-                    else if (atype == Type.LONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
+                    else if (atype == Type.SLONG) Memory.putNativeLong(avalue, ((Number) arg).longValue());
                     avalue += atype.size;
                 }
             }
@@ -163,14 +163,14 @@ public final class Dispatch {
         if (rtype == Type.VOID) return null;
         else if (rtype == Type.SINT8) return Memory.getByte(rvalue);
         else if (rtype == Type.SINT16) return Memory.getShort(rvalue);
-        else if (rtype == Type.JCHAR) return Memory.getChar(rvalue);
+        else if (rtype == Type.UNICHAR) return Memory.getChar(rvalue);
         else if (rtype == Type.SINT32 || rtype == Type.WCHAR) return Memory.getInt(rvalue);
         else if (rtype == Type.SINT64) return Memory.getLong(rvalue);
         else if (rtype == Type.FLOAT) return Memory.getFloat(rvalue);
         else if (rtype == Type.DOUBLE) return Memory.getDouble(rvalue);
         else if (rtype == Type.POINTER || rtype == Type.SIZE) return Memory.getAddress(rvalue);
         else if (rtype == Type.BOOLEAN) return Memory.getAddress(rvalue) != 0;
-        else if (rtype == Type.LONG) return Memory.getNativeLong(rvalue);
+        else if (rtype == Type.SLONG) return Memory.getNativeLong(rvalue);
         else {
             long arg = (long) args[0];
             Memory.copy(arg, Memory.getAddress(rvalue), rtype.size);
